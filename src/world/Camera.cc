@@ -32,7 +32,9 @@ void aCamera::update(float dt)
         if (IsKeyDown(KeyboardKey::KEY_D))
             moveDelta += m.c1();
 
-        transform.position += Vector3Normalize(moveDelta) * speed * dt;
-        transform.position.y = 0.f;
+        moveDelta = Vector3Normalize(moveDelta) * speed * dt;
+        transform.position.x += moveDelta.x;
+        transform.position.z += moveDelta.z;
+        transform.position.y += GetMouseWheelMoveV().y / 5.f;
     }
 }

@@ -11,6 +11,9 @@ Scene::Scene()
     models.push_back(load_from_file("res/monkey.obj"));
     models.back().transform.position = {1.f, 0.f, 3.f};
     models.back().transform.set_pitch(DEG2RAD * 180.f);
+    models.push_back(load_from_file("res/plane.obj"));
+    models.back().transform.set_pitch(DEG2RAD * 180.f);
+    models.back().transform.position.y = 1.f;
 }
 
 void Scene::update(float dt)

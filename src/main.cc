@@ -24,7 +24,8 @@ int main()
 
     while (!WindowShouldClose())
     {
-        if (IsKeyPressed(KEY_ESCAPE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        if (IsKeyPressed(KEY_ESCAPE) ||
+            (toggle ? IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) : IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
         {
             if (toggle)
                 EnableCursor();
