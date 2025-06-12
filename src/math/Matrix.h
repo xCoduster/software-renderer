@@ -1,6 +1,8 @@
 #ifndef MATRIX_H_
 #define MATRIX_H_
 
+#include <ostream>
+
 #include "maths.h"
 
 class Matrix33
@@ -32,5 +34,7 @@ public:
 
     static Matrix33 identity();
 };
+
+std::ostream& operator<<(std::ostream& os, const Matrix33& mat);
 
 #endif // MATRIX_H_

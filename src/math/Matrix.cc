@@ -50,3 +50,11 @@ Matrix33 Matrix33::identity()
 {
     return Matrix33{1, 0, 0, 0, 1, 0, 0, 0, 1};
 }
+
+std::ostream& operator<<(std::ostream& os, const Matrix33& mat)
+{
+    os << "|" << mat.m0 << ", " << mat.m3 << ", " << mat.m6 << "|\n";
+    os << "|" << mat.m1 << ", " << mat.m4 << ", " << mat.m7 << "|\n";
+    os << "|" << mat.m2 << ", " << mat.m5 << ", " << mat.m8 << "|";
+    return os;
+}
