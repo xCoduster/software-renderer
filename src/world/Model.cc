@@ -35,15 +35,18 @@ aModel load_from_file(const std::string& file_path)
         {
             std::istringstream iss{line.substr(2)};
             int i{};
+            std::size_t first{};
             for (std::string vertex{}; std::getline(iss, vertex, ' '); ++i)
             {
-                if (i % 3 == 0)
+                if (i == 0)
                 {
                     model.triangles.emplace_back();
                     model.triangles.back().col.r = random(0, 255);
                     model.triangles.back().col.g = random(0, 255);
                     model.triangles.back().col.b = random(0, 255);
                     model.triangles.back().col.a = 255;
+
+                    first = std::distance(model.triangles.begin(), model.triangles.end() - 1);
                 }
                 std::istringstream v_iss{vertex};
                 std::size_t v;
@@ -51,12 +54,16 @@ aModel load_from_file(const std::string& file_path)
                 --v;
                 if (i >= 3)
                 {
-                    model.triangles.back().v.at(0) = model.triangles.front().v.at(0);
-                    auto it = model.triangles.end();
-                    --it;
-                    --it;
-                    model.triangles.back().v.at(1) = it->v.at(2);
-                    model.triangles.back().v.at(2) = model.triangles.front().v.at(0);
+                    auto prev = std::prev(model.triangles.end());
+                    model.triangles.emplace_back();
+                    model.triangles.back().col.r = random(0, 255);
+                    model.triangles.back().col.g = random(0, 255);
+                    model.triangles.back().col.b = random(0, 255);
+                    model.triangles.back().col.a = 255;
+
+                    model.triangles.back().v.at(0) = model.triangles.at(first).v.at(0);
+                    model.triangles.back().v.at(1) = prev->v.at(2);
+                    model.triangles.back().v.at(2) = v;
                 }
                 else
                     model.triangles.back().v.at(i) = v;
