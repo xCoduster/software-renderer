@@ -2,12 +2,12 @@
 
 #include <cstdlib>
 
-Vector2 perpendicular(const Vector2& v)
+inline Vector2 perpendicular(const Vector2& v)
 {
     return {v.y, -v.x};
 }
 
-float signed_triangle_area(const Vector2& a, const Vector2& b, const Vector2& c)
+inline float signed_triangle_area(const Vector2& a, const Vector2& b, const Vector2& c)
 {
     // Vector2 ac = c - a;
     // Vector2 abPerp = perpendicular(b - a);
@@ -52,6 +52,11 @@ bool point_in_triangle_b(const Vector3& a, const Vector3& b, const Vector3& c, c
     return u >= 0 && v >= 0 && w >= 0 && u + v + w == 1.0f;
 }
 
+inline Vector3 operator/(float lhs, const Vector3& rhs)
+{
+    return {lhs / rhs.x, lhs / rhs.y, lhs / rhs.z};
+}
+
 std::ostream& operator<<(std::ostream& os, const Vector2& vec)
 {
     os << "(" << vec.x << ", " << vec.y << ")";
@@ -72,29 +77,4 @@ int random(int min, int max)
         return 0;
 
     return min + std::rand() % range;
-}
-
-Matrix Transform2Matrix(const Transform& Trs)
-{
-    // Temporary transform matrix
-    Matrix _tfMatrix = MatrixIdentity(); // transformMatrix
-
-    // Matrix scale (in local space)
-    Matrix _scMatrix = MatrixScale(Trs.scale.x, Trs.scale.y, Trs.scale.z); // scaleMatrix
-    _tfMatrix = MatrixMultiply(_tfMatrix, _scMatrix);                      // applyScale
-
-    // Convert Quaternion to rotation matrix
-    Matrix _rtMatrix = QuaternionToMatrix(Trs.rotation); // rotationMatrix
-
-    // matrix rotation
-    Matrix _trMatrix = MatrixIdentity(); // translationMatrix
-    if (Trs.translation.x != 0 || Trs.translation.y != 0 || Trs.translation.z != 0)
-        _trMatrix = MatrixTranslate(Trs.translation.x, Trs.translation.y, Trs.translation.z);
-
-    // Finalize transform
-    _tfMatrix = MatrixMultiply(_tfMatrix, _rtMatrix); // applyRotation
-    _tfMatrix = MatrixMultiply(_tfMatrix, _trMatrix); // applyTransform
-
-    // this->_model.transform = _tfMatrix;
-    return _tfMatrix;
 }
