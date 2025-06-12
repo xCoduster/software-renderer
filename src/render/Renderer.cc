@@ -45,13 +45,13 @@ void Renderer::Render(RenderTarget& target, const Scene& scene)
                     p.y = y;
                     if (point_in_triangle({a.x, a.y}, {b.x, b.y}, {c.x, c.y}, p))
                     {
-                        float depth =
-                            Vector3DotProduct({a.z, b.z, c.z}, weights({a.x, a.y}, {b.x, b.y}, {c.x, c.y}, p));
-                        if (depth <= target.depth_buffer[x + target.size.x * y])
-                        {
-                            target.colour_buffer[x + target.size.x * y] = it->col;
-                            target.depth_buffer[x + target.size.x * y] = depth;
-                        }
+                        Vector3 weight{weights({a.x, a.y}, {b.x, b.y}, {c.x, c.y}, p)};
+                        Vector3 depths{1 / a.z, 1 / b.z, 1 / c.z};
+                        float depth = 1.f / Vector3DotProduct(depths, weight);
+                        if (depth > target.depth_buffer[x + target.size.x * y])
+                            continue;
+                        target.colour_buffer[x + target.size.x * y] = it->col;
+                        target.depth_buffer[x + target.size.x * y] = depth;
                     }
                 }
             }
