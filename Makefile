@@ -1,21 +1,21 @@
 ifndef ($(OS))
-    OS = windows
+    OS = linux
 endif
 
 ifeq ($(OS),linux)
     CXX = g++
     LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
     BUILDDIR := build-linux
-    EXT := ""
+    EXT :=
 else ifeq ($(OS),windows)
     CXX = x86_64-w64-mingw32-g++
     LDFLAGS = -L /root/raylib-win/src -lraylib -lgdi32 -lwinmm
-    BUILDDIR := build
+    BUILDDIR := build-win
     EXT := ".exe"
 endif
 
 ifndef ($(TARGET))
-	TARGET = DEBUG
+	TARGET = RELEASE
 endif
 
 ifeq ($(TARGET),DEBUG)
