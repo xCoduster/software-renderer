@@ -27,10 +27,10 @@ bool point_in_triangle(const Vector2& a, const Vector2& b, const Vector2& c, con
 
 Vector3 weights(const Vector2& a, const Vector2& b, const Vector2& c, const Vector2& p)
 {
-    float areaABP = signed_triangle_area(a, b, p);
     float areaBCP = signed_triangle_area(b, c, p);
     float areaCAP = signed_triangle_area(c, a, p);
-    Vector3 weights{areaABP, areaBCP, areaCAP};
+    float areaABP = signed_triangle_area(a, b, p);
+    Vector3 weights{areaBCP, areaCAP, areaABP};
 
     return weights / (areaABP + areaBCP + areaCAP);
 }
