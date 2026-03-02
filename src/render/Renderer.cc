@@ -15,6 +15,8 @@ void Renderer::Render(RenderTarget& target, const Scene& scene)
     std::fill(target.colour_buffer.begin(), target.colour_buffer.end(), BLACK);
     std::fill(target.depth_buffer.begin(), target.depth_buffer.end(), std::numeric_limits<float>::infinity());
 
+    Vector3 light{0.58, 0.58, 0.58};
+
     for (const aModel& model : scene.models)
     {
         for (auto it = model.triangles.begin(); it != model.triangles.end(); ++it)
@@ -22,6 +24,13 @@ void Renderer::Render(RenderTarget& target, const Scene& scene)
             Vector3 a = vertex_to_screen(model.vertices[it->v.at(0)], model.transform, scene.camera, target.size);
             Vector3 b = vertex_to_screen(model.vertices[it->v.at(1)], model.transform, scene.camera, target.size);
             Vector3 c = vertex_to_screen(model.vertices[it->v.at(2)], model.transform, scene.camera, target.size);
+            Vector3 a_n{}, b_n{}, c_n{};
+            if (model.normals.size() != 0)
+            {
+                a_n = model.normals[it->vn.at(0)];
+                b_n = model.normals[it->vn.at(1)];
+                c_n = model.normals[it->vn.at(2)];
+            }
 
             if (a.z <= 0.f || b.z <= 0.f || c.z <= 0.f)
                 continue;
@@ -50,7 +59,17 @@ void Renderer::Render(RenderTarget& target, const Scene& scene)
                         float depth = 1.f / Vector3DotProduct(depths, weight);
                         if (depth > target.depth_buffer[x + target.size.x * y])
                             continue;
-                        target.colour_buffer[x + target.size.x * y] = it->col;
+
+                        Vector3 normal{a_n * weight.x + b_n * weight.y + c_n * weight.z};
+                        normal = scene.camera.transform.to_local_point(model.transform.to_world_point(normal));
+                        normal = Vector3Normalize(normal);
+                        float diffuse = std::max(0.f, Vector3DotProduct(normal, light));
+
+                        float shade = 10 * diffuse;
+
+                        target.colour_buffer[x + target.size.x * y] = it->col * shade;
+                        // target.colour_buffer[x + target.size.x * y] =
+                        //     Color{normal.x * 255, normal.y * 255, normal.z * 255, 255};
                         target.depth_buffer[x + target.size.x * y] = depth;
                     }
                 }

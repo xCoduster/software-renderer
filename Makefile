@@ -21,7 +21,7 @@ endif
 ifeq ($(TARGET),DEBUG)
     CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -Weffc++ -Wold-style-cast -Woverloaded-virtual -fmax-errors=3 -O0 -g
 else ifeq ($(TARGET),RELEASE)
-    CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -Weffc++ -Wold-style-cast -Woverloaded-virtual -fmax-errors=3 -O3
+    CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -Weffc++ -Wold-style-cast -Woverloaded-virtual -fmax-errors=3 -O3 -g
 endif
 
 DEPFLAGS = -MMD -MF $(DEPDIR)/$*.d

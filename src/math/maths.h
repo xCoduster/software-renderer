@@ -16,6 +16,8 @@ bool point_in_triangle_b(const Vector3& a, const Vector3& b, const Vector3& c, c
 
 inline Vector3 operator/(float lhs, const Vector3& rhs);
 
+Color operator*(const Color& lhs, float rhs);
+
 std::ostream& operator<<(std::ostream& os, const Vector2& vec);
 std::ostream& operator<<(std::ostream& os, const Vector3& vec);
 

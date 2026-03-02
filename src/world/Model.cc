@@ -1,7 +1,9 @@
 #include "Model.h"
 
 #include <fstream>
+#include <iostream>
 #include <sstream>
+#include <string>
 
 #include "math/maths.h"
 
@@ -31,6 +33,20 @@ aModel load_from_file(const std::string& file_path)
             iss >> x >> y >> z;
             model.vertices.push_back({x, y, z});
         }
+        else if (line.substr(0, 2) == "vt ")
+        {
+            std::istringstream iss{line.substr(2)};
+            float x, y;
+            iss >> x >> y;
+            model.texCoords.push_back({x, y});
+        }
+        else if (line.substr(0, 2) == "vn ")
+        {
+            std::istringstream iss{line.substr(2)};
+            float x, y, z;
+            iss >> x >> y >> z;
+            model.normals.push_back({x, y, z});
+        }
         else if (line.substr(0, 2) == "f ")
         {
             std::istringstream iss{line.substr(2)};
@@ -49,9 +65,25 @@ aModel load_from_file(const std::string& file_path)
                     first = std::distance(model.triangles.begin(), model.triangles.end() - 1);
                 }
                 std::istringstream v_iss{vertex};
-                std::size_t v;
-                v_iss >> v;
-                --v;
+                std::size_t v{}, vt{}, vn{};
+                int j{};
+                for (std::string part{}; std::getline(v_iss, part, '/'); ++j)
+                {
+                    switch (j)
+                    {
+                    case 0:
+                        v = stoi(part) - 1;
+                        break;
+                    case 1:
+                        if (part != "")
+                            vt = stoi(part) - 1;
+                        break;
+                    case 2:
+                        if (part != "")
+                            vn = stoi(part) - 1;
+                        break;
+                    }
+                }
                 if (i >= 3)
                 {
                     auto prev = std::prev(model.triangles.end());
@@ -66,7 +98,11 @@ aModel load_from_file(const std::string& file_path)
                     model.triangles.back().v.at(2) = v;
                 }
                 else
+                {
                     model.triangles.back().v.at(i) = v;
+                    model.triangles.back().vt.at(i) = vt;
+                    model.triangles.back().vn.at(i) = vn;
+                }
             }
         }
     }

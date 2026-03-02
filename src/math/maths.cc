@@ -57,6 +57,12 @@ inline Vector3 operator/(float lhs, const Vector3& rhs)
     return {lhs / rhs.x, lhs / rhs.y, lhs / rhs.z};
 }
 
+Color operator*(const Color& lhs, float rhs)
+{
+    return Color{static_cast<unsigned char>(lhs.r * rhs), static_cast<unsigned char>(lhs.g * rhs),
+                 static_cast<unsigned char>(lhs.b * rhs), lhs.a};
+}
+
 std::ostream& operator<<(std::ostream& os, const Vector2& vec)
 {
     os << "(" << vec.x << ", " << vec.y << ")";
