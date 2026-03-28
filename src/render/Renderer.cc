@@ -16,6 +16,8 @@ void Renderer::Render(RenderTarget& target, const Scene& scene)
     std::fill(target.depth_buffer.begin(), target.depth_buffer.end(), std::numeric_limits<float>::infinity());
 
     Vector3 light{0.58, 0.58, 0.58};
+    light = scene.camera.transform.to_local_point(light);
+    light = Vector3Normalize(light);
 
     for (const aModel& model : scene.models)
     {
@@ -61,11 +63,12 @@ void Renderer::Render(RenderTarget& target, const Scene& scene)
                             continue;
 
                         Vector3 normal{a_n * weight.x + b_n * weight.y + c_n * weight.z};
+                        normal *= depths;
                         normal = scene.camera.transform.to_local_point(model.transform.to_world_point(normal));
                         normal = Vector3Normalize(normal);
                         float diffuse = std::max(0.f, Vector3DotProduct(normal, light));
 
-                        float shade = 10 * diffuse;
+                        float shade = std::clamp(diffuse, 0.0f, 1.0f);
 
                         target.colour_buffer[x + target.size.x * y] = it->col * shade;
                         // target.colour_buffer[x + target.size.x * y] =
